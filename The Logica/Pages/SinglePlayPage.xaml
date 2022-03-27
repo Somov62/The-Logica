@@ -1,0 +1,855 @@
+﻿<Page x:Class="The_Logica.Pages.SinglePlayPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:The_Logica.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="1000" d:DesignWidth="1900" FontFamily="../Fonts/#vcrosdmonorusbyd"
+      Title="SinglePlayPage" Background="{StaticResource Back}" KeyDown="Page_KeyDown" Focusable="True">
+    <Page.Resources>
+        <Style x:Key="СhipStyle" TargetType="Ellipse">
+            <Setter Property="Fill" Value="{StaticResource Black}" />
+            <Setter Property="Stroke" Value="{StaticResource RedAccent}" />
+            <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" />
+            <Setter Property="StrokeThickness" Value="3" />
+            <Setter Property="Margin" Value="0, 5" />
+            <EventSetter Event="MouseDown"  Handler="SelectChip_Click"/>
+        </Style>
+        <Style x:Key="ChipAnswerStyle" TargetType="Ellipse" BasedOn="{StaticResource СhipStyle}">
+            <Setter Property="Width" Value="20" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="StrokeThickness" Value="1.5" />
+            <Setter Property="Fill" Value="#FFE6CE66" />
+            <Setter Property="Margin" Value="15,5"/>
+        </Style>
+    </Page.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.9*"/>
+            <ColumnDefinition Width="1.8*"/>
+            <ColumnDefinition Width="1.1*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.20*" MinHeight="60"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="TextAlignment" Value="Center" />
+                    <Setter Property="FontSize" Value="25" />
+                    <Setter Property="LineStackingStrategy" Value="BlockLineHeight" />
+                    <Setter Property="LineHeight" Value="35" />
+                </Style>
+            </Grid.Resources>
+            <Grid Grid.Row="0"  Margin="10, 5, 5, 5" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Margin="0, 0, 5, 0" Padding="10, 5" Background="{StaticResource Yellow}" CornerRadius="3" >
+                    <Button Content="В меню" Margin="0" FontSize="20" Padding="10" Click="ToMenu_Click"/>
+                </Border>
+                <Border Margin="5, 0 ,0 ,0" Grid.Column="1" Padding="10, 5" Background="{StaticResource Yellow}" CornerRadius="3" >
+                    <Button Content="Заново" Margin="0" FontSize="20" Padding="10" Click="Restart_Click"/>
+                </Border>
+            </Grid>
+
+            <TextBlock Grid.Row="1" Text="Ваш противник     &#10;         - компьютер"  Margin="-40, 10, 0, 0" LineHeight="40" />
+            <TextBlock Grid.Row="2" Text="Вы успешно втёрлись к&#10;нему в доверие, и&#10;теперь он отвечает на&#10;ваши попытки подбора&#10;шифра" LineHeight="40"  Margin="0, 10, 0 ,0"/>
+            <TextBlock Grid.Row="3" Text="Ответ на каждую гипотезу&#10;  приходит сюда ☞"  Margin="0, 20, 0, 0" />
+            
+            <Grid Grid.Row="4" Margin="0, 30, 0, 0">
+                <Border  Visibility="Hidden" x:Name="tip1" BorderBrush="{StaticResource Yellow}" BorderThickness="4" CornerRadius="3" Margin="10 0 5 0" >
+                    <Button Margin="0" Background="Transparent" Click="Hide_Click" />
+                </Border>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>  <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Visibility="Hidden"  x:Name="tip2" IsHitTestVisible="False" Text="Белый сигнал означает, что в вашей гипотезе есть нужный цвет, но стоит не на том месте" Margin="0, 10, 0, 0" />
+                    <TextBlock Visibility="Hidden" Grid.Row="1" x:Name="tip3" IsHitTestVisible="False" Text="       сигнал означает, что в вашей гипотезе есть нужный цвет, и он стоит на нужном месте" />
+                    <TextBlock Visibility="Hidden" Grid.Row="1" x:Name="tip4" IsHitTestVisible="False" Text="Черный                " Foreground="Black" FontWeight="SemiBold"/>
+                </Grid>
+                <Border  x:Name="btnTip" BorderBrush="{StaticResource Yellow}" Background="{StaticResource Yellow}" BorderThickness="4" CornerRadius="3" Margin="10 0 5 0"  VerticalAlignment="Top">
+                    <Button Content="Об ответах" Margin="30, 15" FontSize="23" Click="ShowTip_Click"/>
+                </Border>
+            </Grid>
+            <TextBlock Grid.Row="5" Text="Пользуйтесь подсказками наивного компьютера при составлении последующих гипотез! Удачи!" Margin="10, 20" />
+        </Grid>
+        
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5.1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border Grid.RowSpan="12" Grid.Row="1" Background="{StaticResource Yellow}" Margin="5, 0" CornerRadius="3"/>
+            
+            <!--#region AnswerPath-->
+
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="1">
+                <Grid>
+                    <Ellipse x:Name="answer1s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer1s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer1s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer1s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer1s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="2">
+                <Grid>
+                    <Ellipse x:Name="answer2s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer2s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer2s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer2s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer2s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="3">
+                <Grid>
+                    <Ellipse x:Name="answer3s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer3s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer3s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer3s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer3s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="4">
+                <Grid>
+                    <Ellipse x:Name="answer4s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer4s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer4s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer4s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer4s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="5">
+                <Grid>
+                    <Ellipse x:Name="answer5s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer5s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer5s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer5s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer5s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="6">
+                <Grid>
+                    <Ellipse x:Name="answer6s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer6s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer6s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer6s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer6s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="7">
+                <Grid>
+                    <Ellipse x:Name="answer7s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer7s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer7s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer7s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer7s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="8">
+                <Grid>
+                    <Ellipse x:Name="answer8s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer8s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer8s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer8s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer8s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="9">
+                <Grid>
+                    <Ellipse x:Name="answer9s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer9s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer9s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer9s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer9s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="10">
+                <Grid>
+                    <Ellipse x:Name="answer10s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer10s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer10s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer10s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer10s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="11">
+                <Grid>
+                    <Ellipse x:Name="answer11s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer11s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer11s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer11s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer11s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource FrameAnswerStyle}" Grid.Row="12">
+                <Grid>
+                    <Ellipse x:Name="answer12s0" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer12s1" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer12s2" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+                    <Ellipse x:Name="answer12s3" Style="{StaticResource ChipAnswerStyle}" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                    <Ellipse x:Name="answer12s4" Style="{StaticResource ChipAnswerStyle}"/>
+                </Grid>
+            </Border>
+
+
+
+
+            <!--#endregion-->
+            
+            <!--#region Encrypted code-->
+            <Border x:Name="EncryptedArea" Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Grid>
+                                <TextBlock Text="?" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" FontSize="40" Foreground="{StaticResource RedAccent}"/>
+                                <Ellipse x:Name="encryptedCodeCell1" Style="{StaticResource СhipStyle}" Visibility="Hidden"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Grid>
+                                <TextBlock Text="?" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" FontSize="40" Foreground="{StaticResource RedAccent}"/>
+                                <Ellipse x:Name="encryptedCodeCell2" Style="{StaticResource СhipStyle}" Visibility="Hidden"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Grid>
+                                <TextBlock Text="?" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" FontSize="40" Foreground="{StaticResource RedAccent}"/>
+                                <Ellipse x:Name="encryptedCodeCell3" Style="{StaticResource СhipStyle}" Visibility="Hidden"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Grid>
+                                <TextBlock Text="?" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" FontSize="40" Foreground="{StaticResource RedAccent}"/>
+                                <Ellipse x:Name="encryptedCodeCell4" Style="{StaticResource СhipStyle}" Visibility="Hidden"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Grid>
+                                <TextBlock Text="?" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0" FontSize="40" Foreground="{StaticResource RedAccent}"/>
+                                <Ellipse x:Name="encryptedCodeCell5" Style="{StaticResource СhipStyle}" Visibility="Hidden"/>
+                            </Grid>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Cells-->
+            <!--#region Row-12 -->
+            <Border x:Name="Row12Area" Grid.Column="1" Grid.Row="12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell12d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell12d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell12d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell12d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell12d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-11 -->
+            <Border x:Name="Row11Area" Grid.Column="1" Grid.Row="11" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell11d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell11d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell11d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell11d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell11d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-10 -->
+            <Border x:Name="Row10Area" Grid.Column="1" Grid.Row="10" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell10d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell10d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell10d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell10d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell10d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-9 -->
+            <Border x:Name="Row9Area" Grid.Column="1" Grid.Row="9" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell9d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell9d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell9d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell9d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell9d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+           
+            <!--#endregion-->
+
+            <!--#region Row-8 -->
+            <Border x:Name="Row8Area" Grid.Column="1" Grid.Row="8" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell8d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell8d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell8d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell8d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell8d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-7 -->
+            <Border x:Name="Row7Area" Grid.Column="1" Grid.Row="7" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell7d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell7d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell7d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell7d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell7d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-6 -->
+            <Border x:Name="Row6Area" Grid.Column="1" Grid.Row="6" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell6d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell6d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell6d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell6d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell6d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-5 -->
+            <Border x:Name="Row5Area" Grid.Column="1" Grid.Row="5" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell5d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell5d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell5d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell5d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell5d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-4 -->
+            <Border x:Name="Row4Area" Grid.Column="1" Grid.Row="4" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell4d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell4d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell4d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell4d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell4d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+           
+            <!--#endregion-->
+
+            <!--#region Row-3 -->
+            <Border x:Name="Row3Area" Grid.Column="1" Grid.Row="3" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell3d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell3d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell3d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell3d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell3d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-2 -->
+            <Border x:Name="Row2Area" Grid.Column="1" Grid.Row="2" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell2d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell2d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell2d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell2d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell2d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+
+            <!--#region Row-1 -->
+            <Border x:Name="Row1Area" Grid.Column="1" Grid.Row="1" Visibility="Hidden">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell1d0" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="1" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell1d1" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell1d2" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="3" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell1d3" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource CellStyle}">
+                        <Border Style="{StaticResource FrameCellStyle}">
+                            <Ellipse x:Name="cell1d4" Style="{StaticResource СhipStyle}"/>
+                        </Border>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!--#endregion-->
+            <!--#endregion-->
+            
+        </Grid>
+        
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="0.15*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Взломайте этот шифр🔒&#10;&#10;Применяйте логику!" HorizontalAlignment="Center" Margin="0, 60" Foreground="White" FontSize="25" TextAlignment="Center"/>
+            <TextBlock Text="Ваше количество         &#10;&#10;       попыток ограничено!" HorizontalAlignment="Center" Margin="0, 200" Foreground="White" FontSize="25" TextAlignment="Center"/>
+            <Border Background="{StaticResource Yellow}" Margin="29, 300, 15, 0" VerticalAlignment="Top" CornerRadius="3">
+                <Grid>
+                    <TextBlock Text="Попыток осталось:" VerticalAlignment="Center" Margin="20, 12, 0, 10" FontSize="25"/>
+                    <TextBlock x:Name="countTry" Text="12" VerticalAlignment="Center" Margin="310, 15, 0, 15" FontSize="40" HorizontalAlignment="Center"/>
+                </Grid>
+            </Border>
+            <TextBlock Text="Анализируйте            &#10;&#10;Размышляйте&#10;&#10;               Ломайте!" HorizontalAlignment="Center" Margin="0, 420, 0, 0" Foreground="White" FontSize="25" TextAlignment="Center"/>
+            <TextBlock Text="Предположите, каким&#10;&#10;может быть шифр,&#10;&#10;выставите цвета в ячейки&#10;&#10;и нажмите кнопку ☟"  HorizontalAlignment="Center" Margin="0,  580, 0, 0" Foreground="White" FontSize="25" TextAlignment="Center"/>
+            <Border Grid.RowSpan="2" Width="4" HorizontalAlignment="Left" Background="{StaticResource Yellow}" Margin="10, 20, 0, 20" CornerRadius="1.5"/>
+            <Border Background="{StaticResource Yellow}" Margin="29, 0, 15, 20" VerticalAlignment="Bottom" CornerRadius="3">
+                <Button x:Name="btnSend" Content="Отправить шифровщику" Margin="40, 15" FontSize="23" Click="SendToCheck_Click" IsEnabled="False"/>
+            </Border>
+            <!--#region ColorPiker-->
+            <Border Grid.Row="1" Style="{StaticResource CellStyle}" Margin="29, 0, 15, 20">
+                <Border Style="{StaticResource FrameCellStyle}" Margin="0, 5, 0, 5">
+                    <Grid>
+                        <Grid.Resources>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="BorderBrush" Value="Black" />
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Margin" Value="7, 7, 7, 0" />
+                                <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border x:Name="border" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="20" SnapsToDevicePixels="true"/>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource RedAccent}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF5CB80F"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.3" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <EventSetter Event="Click" Handler="SetColor_Click"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="0.7*"/>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Column="0" Background="HotPink" IsEnabled="{Binding ElementName=cb1, Path=IsChecked}"/>
+                        <Button Grid.Column="1" Background="#007DFF" IsEnabled="{Binding ElementName=cb2, Path=IsChecked}"/>
+                        <Button Grid.Column="2" Background="White"   IsEnabled="{Binding ElementName=cb3, Path=IsChecked}"/>
+                        <Button Grid.Column="3" Background="#BA55D3" IsEnabled="{Binding ElementName=cb4, Path=IsChecked}"/>
+                        <Button Grid.Column="4" Background="Yellow"  IsEnabled="{Binding ElementName=cb5, Path=IsChecked}"/>
+                        <Button Grid.Column="5" Background="#34C924" IsEnabled="{Binding ElementName=cb6, Path=IsChecked}"/>
+                        <Button Grid.Column="6" Background="#F8173E" IsEnabled="{Binding ElementName=cb7, Path=IsChecked}"/>
+                        <Button Grid.Column="7" Background="#FF4F00" IsEnabled="{Binding ElementName=cb8, Path=IsChecked}"/>
+                        <CheckBox x:Name="cb1" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="0"/>
+                        <CheckBox x:Name="cb2" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="1"/>
+                        <CheckBox x:Name="cb3" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="2"/>
+                        <CheckBox x:Name="cb4" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="3"/>
+                        <CheckBox x:Name="cb5" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="4"/>
+                        <CheckBox x:Name="cb6" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="5"/>
+                        <CheckBox x:Name="cb7" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="6"/>
+                        <CheckBox x:Name="cb8" Style="{DynamicResource CheckBoxStyle}" Grid.Row="1" Grid.Column="7"/>
+                    </Grid>
+                </Border>
+            </Border>
+            <!--#endregion-->
+        </Grid>
+    </Grid>
+</Page>
